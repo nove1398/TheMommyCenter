@@ -1,11 +1,14 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Linq;
+using MommyDayCare.Server.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Mvc.Versioning;
 
 namespace MommyDayCare.Server
 {
@@ -22,8 +25,39 @@ namespace MommyDayCare.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            services.AddCors(opts =>
+            {
+                opts.AddPolicy("CorsPolicy", builder => builder.WithOrigins("https://localhost:44306")
+                                                                .AllowAnyMethod()
+                                                                .AllowAnyHeader()
+                                                                .AllowCredentials()
+                                                                .Build());
+                                                            });
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opts=> 
+            {
+                opts.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["AuthSettings:Issuer"],
+                    ValidAudience = Configuration["AuthSettings:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AuthSettings:Key"]))
+                };
+            });
+            services.AddDbContext<BlogDBContext>(opts=>opts.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
             services.AddControllersWithViews();
+
+            services.AddApiVersioning(cfg => 
+            {
+                cfg.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1,1);
+                cfg.AssumeDefaultVersionWhenUnspecified = true;
+                cfg.ReportApiVersions = true;
+                cfg.ApiVersionReader = ApiVersionReader.Combine(
+                                            new HeaderApiVersionReader("X-Version"),
+                                            new QueryStringApiVersionReader("x-version"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,7 +79,10 @@ namespace MommyDayCare.Server
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 
+            app.UseCors("CorsPolicy");
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
