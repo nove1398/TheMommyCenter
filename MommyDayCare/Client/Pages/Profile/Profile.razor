@@ -1,0 +1,15 @@
+﻿@page "/profile/{Username}"
+
+<h3>Profile [@Username]</h3>
+<div>
+    <div>
+        <img class="rounded p-1 img-fluid" src="" />
+        <p>Namey Namey</p>
+    </div>
+    <div>
+
+    </div>
+</div>
+@code {
+    [Parameter] public string Username { get; set; }
+}

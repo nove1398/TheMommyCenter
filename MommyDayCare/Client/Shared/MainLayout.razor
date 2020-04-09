@@ -1,15 +1,48 @@
 ﻿@inherits LayoutComponentBase
+@inject TokenAuthProvider Provider
+@inject NavigationManager NavigationManager
 
 <div class="sidebar">
     <NavMenu />
 </div>
 
 <div class="main">
-    <div class="top-row px-4">
-        <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
-    </div>
+    <!--Top nav menu-->
+    <div class="top-row px-4 d-flex">
+        <AuthorizeView Roles="Admin">
+            <a href="/admin">Admin</a>
+        </AuthorizeView>
+        <AuthorizeView>
+            <Authorized>
+                <div class="d-flex w-100 justify-content-end">
+                    <div>
+                        <a href="/profile/myaccount" class="font-weight-bold"><span class="oi oi-account-login"></span>Profile</a>
+                    </div>
+                    <div class="mr-1">Logged in as @context.User.Identity.Name</div>
+                    <button class="btn btn-sm btn-outline-dark" @onclick="OnLogout"> Logout</button>
+                </div>
+               
+            </Authorized>
+            <Authorizing>...Loading</Authorizing>
+            <NotAuthorized>
+                <a href="/auth/login" class="btn btn-outline-info">Login</a>
+            </NotAuthorized>
+        </AuthorizeView>
 
+    </div>
+    <!--End top nav menu-->
+    <!--Body portion of page-->
     <div class="content px-4">
         @Body
     </div>
+    <!--End body portion of page-->
 </div>
+
+@code{
+
+    private async Task OnLogout()
+    {
+        await Provider.SetTokenAsync(null);
+        NavigationManager.NavigateTo("/",true);
+    }
+}

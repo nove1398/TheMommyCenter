@@ -1,0 +1,64 @@
+﻿@page "/auth/login"
+@inject HttpProvider Http
+@inject TokenAuthProvider Provider
+@inject NavigationManager NavigationManager
+
+<div class="card">
+    <div class="card-body">
+        <h3>Login @Token</h3>
+        @if (Errors.Length > 0)
+        {
+            //Display errors
+        }
+        <EditForm Model="loginViewModel" OnValidSubmit="SubmitLogin">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label>Email</label>
+                <InputText class="form-control" @bind-Value="loginViewModel.Email" />
+                <ValidationMessage For="@(()=> loginViewModel.Email)" />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <InputText class="form-control" @bind-Value="loginViewModel.Password" />
+                <ValidationMessage For="@(()=> loginViewModel.Password)" />
+            </div>
+
+            <button type="submit" class="btn btn-outline-primary btn-sm">Submit</button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private LoginModelView loginViewModel = new LoginModelView();
+    private string[] Errors = new string[] { };
+    private string Token { get; set; }
+
+    protected override async void OnInitialized()
+    {
+        //var response =  await Http2.GetAsync<LoginModelView>("api/auth/test");
+        // await Provider.SetTokenAsync(response.Token, response.TokenExpiry);
+        loginViewModel.Email = "test@mgail.com";
+        loginViewModel.Password = "passworded";
+    }
+
+
+    private async Task SubmitLogin()
+    {
+        // Login via api and save token and expiry date
+        // Provider.SetToken()
+
+        var response = await Http.PostAsync<LoginModelView>("api/auth/login", loginViewModel);
+        if (response.Errors == null || response.Errors.Length < 1)
+        {
+            await Provider.SetTokenAsync(response.Token, response.TokenExpiry);
+            Token = response.Token;
+            
+            NavigationManager.NavigateTo("/",true);
+        }
+        else
+        {
+            //Handle error array
+            Errors = response.Errors;
+        }
+    }
+}

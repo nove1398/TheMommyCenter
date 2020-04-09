@@ -10,8 +10,11 @@ namespace MommyDayCare.Shared.Models
         [Key]
         public int AppUserFollowingId { get; set; }
 
+        [DataType(DataType.DateTime)]
+        public DateTime CreatedOn { get; set; }
+
+        public int AppUserToFollowId { get; set; }
         public int AppUserFollowerId { get; set; }
-        public int AppUserFolloweeId { get; set; }
 
         public AppUser AppUserFollower { get; set; }
         public AppUser AppUserFollowee { get; set; }

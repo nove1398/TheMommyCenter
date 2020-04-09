@@ -5,17 +5,15 @@ using System.Text;
 
 namespace MommyDayCare.Shared.Models
 {
-    /*
-     * A group of posts under the same theme
-     */
-    public class Collection
+    public class AppUserGroup
     {
         [Key]
-        public int CollectionId { get; set; }
+        public int AppUserGroupId { get; set; }
 
-        public string Title { get; set; }
+        [Required]
+        [MinLength(3, ErrorMessage = "Too short")]
+        public string Name { get; set; }
 
         public string Description { get; set; }
-
     }
 }

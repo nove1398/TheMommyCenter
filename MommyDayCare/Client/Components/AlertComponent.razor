@@ -1,0 +1,53 @@
+﻿@if (IsVisible)
+{
+    <div class="col-sm-12">
+        <div role="alert" class="alert @ClassName">
+            <h3><span class="float-left">@Title</span><span style="cursor:pointer" class="float-right oi oi-circle-x font-weight-bold" @onclick="OnCloseAlert"></span></h3>
+            <p>@Body</p>
+        </div>
+    </div>
+}
+
+
+@code {
+
+    [Parameter] public AlertType AType { get; set; }
+    [Parameter] public string Title { get; set; }
+    [Parameter] public string Body { get; set; }
+    [Parameter] public bool IsVisible { get; set; }
+    private string ClassName { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        switch (AType)
+        {
+            case AlertType.Danger:
+                ClassName = "alert-danger";
+                break;
+            case AlertType.Warning:
+                ClassName = "alert-warning";
+                break;
+            case AlertType.Info:
+                ClassName = "alert-info";
+                break;
+            case AlertType.Success:
+                ClassName = "alert-success";
+                break;
+        }
+    }
+
+    private void OnCloseAlert()
+    {
+        IsVisible = false;
+    }
+
+    public enum AlertType
+    {
+        Warning,
+        Danger,
+        Success,
+        Info
+    }
+}

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MommyDayCare.Shared.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MommyDayCare.Server.Controllers
 {
@@ -26,6 +27,7 @@ namespace MommyDayCare.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();

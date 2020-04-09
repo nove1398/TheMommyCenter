@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29920.165
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MommyDayCare.Server", "MommyDayCare\Server\MommyDayCare.Server.csproj", "{741608EB-BCFB-4CDC-8633-BE77F70D4D0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MommyDayCare.Server", "MommyDayCare\Server\MommyDayCare.Server.csproj", "{741608EB-BCFB-4CDC-8633-BE77F70D4D0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MommyDayCare.Client", "MommyDayCare\Client\MommyDayCare.Client.csproj", "{0D70637F-30A9-4194-8F87-78C1C3E69970}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MommyDayCare.Client", "MommyDayCare\Client\MommyDayCare.Client.csproj", "{0D70637F-30A9-4194-8F87-78C1C3E69970}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MommyDayCare.Shared", "MommyDayCare\Shared\MommyDayCare.Shared.csproj", "{C560140A-5DDB-4358-AFBD-CE2890436394}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MommyDayCare.Shared", "MommyDayCare\Shared\MommyDayCare.Shared.csproj", "{C560140A-5DDB-4358-AFBD-CE2890436394}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

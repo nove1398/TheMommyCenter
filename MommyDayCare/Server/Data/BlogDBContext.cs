@@ -19,7 +19,7 @@ namespace MommyDayCare.Server.Data
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
-        public DbSet<AppUserRank> AppUserRanks { get; set; }
+        public DbSet<AppUserGroup> AppUserRanks { get; set; }
         public DbSet<AppUserRole> AppUserRoles { get; set; }
         public DbSet<AppUserFollowing> AppUserFollowing { get; set; }
     }

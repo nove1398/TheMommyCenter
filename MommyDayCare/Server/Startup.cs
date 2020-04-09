@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Components.Authorization;
+using MommyDayCare.Client.Providers;
 
 namespace MommyDayCare.Server
 {
@@ -28,12 +30,18 @@ namespace MommyDayCare.Server
             services.AddCors(opts =>
             {
                 opts.AddPolicy("CorsPolicy", builder => builder.WithOrigins("https://localhost:44306")
-                                                                .AllowAnyMethod()
+                                                                .WithMethods("PUT","DELETE","POST","GET")
                                                                 .AllowAnyHeader()
                                                                 .AllowCredentials()
-                                                                .Build());
+                                                                );
                                                             });
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opts=> 
+            services.AddAuthentication(
+                    auth =>
+                {
+                    auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(opts=> 
             {
                 opts.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -46,6 +54,10 @@ namespace MommyDayCare.Server
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AuthSettings:Key"]))
                 };
             });
+            services.AddAuthorizationCore();
+            services.AddScoped<TokenAuthProvider>();
+            services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<TokenAuthProvider>());
+
             services.AddDbContext<BlogDBContext>(opts=>opts.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
             services.AddControllersWithViews();
 
@@ -56,7 +68,7 @@ namespace MommyDayCare.Server
                 cfg.ReportApiVersions = true;
                 cfg.ApiVersionReader = ApiVersionReader.Combine(
                                             new HeaderApiVersionReader("X-Version"),
-                                            new QueryStringApiVersionReader("x-version"));
+                                            new QueryStringApiVersionReader("X-Version"));
             });
         }
 
