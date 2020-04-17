@@ -14,16 +14,16 @@
         </AuthorizeView>
         <AuthorizeView>
             <Authorized>
-                <div class="d-flex w-100 justify-content-end">
-                    <div>
-                        <a href="/profile/myaccount" class="font-weight-bold"><span class="oi oi-account-login"></span>Profile</a>
+                <div class="d-flex w-100 justify-content-between">
+                    <div class="header-content-left">
+                        <a href="/profile/myaccount" class="font-weight-bold"><span class="oi oi"></span>Profile</a>
                     </div>
-                    <div class="mr-1">Logged in as @context.User.Identity.Name</div>
-                    <button class="btn btn-sm btn-outline-dark" @onclick="OnLogout"> Logout</button>
+                    <div class="header-content-right">
+                        <span>Hi, @context.User.Identity.Name</span>
+                        <button class="btn btn-sm btn-outline-dark" @onclick="OnLogout"> Logout</button>
+                    </div>
                 </div>
-               
             </Authorized>
-            <Authorizing>...Loading</Authorizing>
             <NotAuthorized>
                 <a href="/auth/login" class="btn btn-outline-info">Login</a>
             </NotAuthorized>

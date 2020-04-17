@@ -19,11 +19,11 @@
             </div>
             <div class="form-group">
                 <label>Password</label>
-                <InputText class="form-control" @bind-Value="loginViewModel.Password" />
+                <InputText class="form-control" type="password" @bind-Value="loginViewModel.Password" />
                 <ValidationMessage For="@(()=> loginViewModel.Password)" />
             </div>
 
-            <button type="submit" class="btn btn-outline-primary btn-sm">Submit</button>
+            <button type="submit" class="btn btn-outline-primary btn-sm">Login</button>
         </EditForm>
     </div>
 </div>

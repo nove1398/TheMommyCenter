@@ -16,15 +16,30 @@ namespace MommyDayCare.Shared.Models
         [DataType(DataType.DateTime)]
         public DateTime UpdatedOn { get; set; }
 
-        [Display(Name = "Type")]
+        [Required]
+        [Display(Name = "Post Type")]
         public PostType PostCategory { get; set; }
 
-        [MaxLength(100, ErrorMessage = "100 characters max")]
+        [Required]
+        [MaxLength(50, ErrorMessage = "100 characters max")]
+        [MinLength(5, ErrorMessage = "At least 5 characters")]
         public string Title { get; set; }
 
+        [Required]
+        [MinLength(5, ErrorMessage = "At least 5 characters")]
         public string Body { get; set; }
 
         public string Attachment { get; set; }
+
+        public PostStatus Status { get; set; }
+
+
+        public enum PostStatus
+        {
+            Active,
+            Pending,
+            Disabled
+        }
 
         public enum PostType
         {

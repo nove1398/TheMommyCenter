@@ -57,6 +57,8 @@ namespace MommyDayCare.Shared.Models
         [DataType(DataType.Date)]
         public DateTime? Birthday { get; set; }
 
+        public ICollection<AppUserRole> UserRoles { get; set; }
+
         public enum Gender
         {
             Male,

@@ -9,5 +9,10 @@ namespace MommyDayCare.Shared.Models
     {
         [Key]
         public int TagId { get; set; }
+
+        [Required]
+        [MaxLength(15, ErrorMessage = "15 characters max")]
+        [MinLength(3, ErrorMessage = "At least 3 characters")]
+        public string Name { get; set; }
     }
 }

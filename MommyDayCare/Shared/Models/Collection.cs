@@ -13,9 +13,13 @@ namespace MommyDayCare.Shared.Models
         [Key]
         public int CollectionId { get; set; }
 
+        [Required]
+        [MaxLength(20, ErrorMessage = "Max 20 characters")]
         public string Title { get; set; }
 
+        
         public string Description { get; set; }
 
+        public ICollection<Post> Posts { get; set; }
     }
 }
