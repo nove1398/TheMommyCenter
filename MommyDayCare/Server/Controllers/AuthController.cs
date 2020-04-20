@@ -85,6 +85,7 @@ namespace MommyDayCare.Server.Controllers
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterModelView model)
         {
             //HttpContext.User.Identity.Name;
+            
             return Ok(new { Message = "It works! register" });
         }
     }

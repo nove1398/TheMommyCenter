@@ -33,6 +33,7 @@ namespace MommyDayCare.Shared.Models
 
         public PostStatus Status { get; set; }
 
+        public virtual ICollection<Comment> Comments { get; set; }
 
         public enum PostStatus
         {

@@ -20,6 +20,6 @@ namespace MommyDayCare.Shared.Models
         
         public string Description { get; set; }
 
-        public ICollection<Post> Posts { get; set; }
+        public virtual ICollection<Post> Posts { get; set; }
     }
 }
