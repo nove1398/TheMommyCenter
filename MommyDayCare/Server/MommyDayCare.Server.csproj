@@ -28,5 +28,9 @@
     <ProjectReference Include="..\Shared\MommyDayCare.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\avatar\" />
+  </ItemGroup>
+
 
 </Project>
