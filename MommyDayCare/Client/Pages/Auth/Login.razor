@@ -29,7 +29,7 @@
 </div>
 
 @code {
-    private LoginModelView loginViewModel = new LoginModelView();
+    private LoginViewModel loginViewModel = new LoginViewModel();
     private string[] Errors = new string[] { };
     private string Token { get; set; }
 
@@ -47,12 +47,12 @@
         // Login via api and save token and expiry date
         // Provider.SetToken()
 
-        var response = await Http.PostAsync<LoginModelView>("api/auth/login", loginViewModel);
+        var response = await Http.PostAsync<LoginViewModel>("api/auth/login", loginViewModel);
         if (response.Errors == null || response.Errors.Length < 1)
         {
             await Provider.SetTokenAsync(response.Token, response.TokenExpiry);
             Token = response.Token;
-            
+
             NavigationManager.NavigateTo("/",true);
         }
         else

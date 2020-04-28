@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MommyDayCare.Shared.ViewModels
 {
-    public class LoginModelView
+    public class LoginViewModel
     {
 
         [Required]

@@ -35,9 +35,9 @@ namespace MommyDayCare.Server.Controllers
         }
 
         [HttpGet("test")]
-        public async Task<LoginModelView> Test()
+        public async Task<LoginViewModel> Test()
         {
-            var responseModel = new LoginModelView();
+            var responseModel = new LoginViewModel();
             responseModel.Token = "gfewgewgwegwegweg";
             responseModel.TokenExpiry = DateTime.Now.AddDays(2);
             responseModel.ResponseMessage = "Test successful";
@@ -46,9 +46,9 @@ namespace MommyDayCare.Server.Controllers
 
         [HttpPost("Login")]
         [MapToApiVersion("1.1")]
-        public async Task<IActionResult> LoginAsync([FromBody] LoginModelView requestModel)
+        public async Task<IActionResult> LoginAsync([FromBody] LoginViewModel requestModel)
         {
-            var responseModel = new LoginModelView();
+            var responseModel = new LoginViewModel();
             if (1 == 2 || 3 > 1)
             {
                 //login user JWT
@@ -76,13 +76,13 @@ namespace MommyDayCare.Server.Controllers
 
         [HttpPost("Login")]
         [MapToApiVersion("1.2")]
-        public async Task<IActionResult> LoginV2Async([FromBody] LoginModelView model)
+        public async Task<IActionResult> LoginV2Async([FromBody] LoginViewModel model)
         {
             return Ok(new { Message = "It works! Login V1.2" });
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterAsync([FromBody] RegisterModelView model)
+        public async Task<IActionResult> RegisterAsync([FromBody] RegisterViewModel model)
         {
             //HttpContext.User.Identity.Name;
             
