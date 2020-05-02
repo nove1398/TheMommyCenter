@@ -11,9 +11,11 @@ namespace MommyDayCare.Shared.Models
         public int AppUserGroupId { get; set; }
 
         [Required]
-        [MinLength(3, ErrorMessage = "Too short")]
+        [MinLength(3, ErrorMessage = "At least 3 characters")]
         public string Name { get; set; }
 
+        [MinLength(5, ErrorMessage = "At least 5 characters")]
+        [MaxLength(500, ErrorMessage = "Maxmimum 500 characters")]
         public string Description { get; set; }
     }
 }

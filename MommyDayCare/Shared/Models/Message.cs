@@ -10,16 +10,18 @@ namespace MommyDayCare.Shared.Models
         [Key]
         public int MessageId { get; set; }
 
-        public int SenderId { get; set; }
+        public int? SenderId { get; set; }
         public AppUser Sender { get; set; }
         
-        public int ReceiverId { get; set; }
+        public int? ReceiverId { get; set; }
         public AppUser Receiver { get; set; }
 
         public string Attachment { get; set; }
 
         [DataType(DataType.DateTime)]
         public DateTime CreatedOn { get; set; }
+
+        public DateTime? OpenOn { get; set; }
 
         public bool IsDeleted { get; set; }
 

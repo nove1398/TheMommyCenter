@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using MommyDayCare.Server.Services;
 using MommyDayCare.Shared.ViewModels;
 
 namespace MommyDayCare.Server.Controllers
@@ -19,7 +21,14 @@ namespace MommyDayCare.Server.Controllers
     /// X-Version: {api_version}
     /// ...
     /// URL Example.
-    /// https://URL_HERE/api/auth/Login?x-version={api_version}
+    /// https://localhost/api/auth/Login?x-version={api_version}
+    ///  [ApiController]
+    ///    
+    /// GET: 200 OK
+    /// POST: 201 Created
+    /// PUT: 200 OK
+    /// PATCH: 200 OK
+    /// DELETE: 204 No Content
     /// </summary>
     [ApiController]
     [ApiVersion("1.1")]
@@ -27,51 +36,55 @@ namespace MommyDayCare.Server.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
+
+        private readonly IAuthService _service;
         private readonly IConfiguration _config;
 
-        public AuthController(IConfiguration config)
+        public AuthController(IConfiguration config, IAuthService service) 
         {
+            _service = service;
             _config = config;
         }
 
-        [HttpGet("test")]
-        public async Task<LoginViewModel> Test()
+        //Internally send accurate response code to client
+        private ObjectResult SendResponse(ResponseBase response)
         {
-            var responseModel = new LoginViewModel();
+            response.Uri = Request.Path;
+            switch (response.Status)
+            {
+                case HttpStatusCode.OK:
+                    return Ok(response);
+                case HttpStatusCode.BadRequest:
+                    return BadRequest(response);
+                case HttpStatusCode.NotFound:
+                    return NotFound(response);
+                case HttpStatusCode.Unauthorized:
+                    return Unauthorized(response);
+                case HttpStatusCode.Created:
+                    return Created("", response);
+                default:
+                    return Unauthorized(response);
+            }
+        }
+
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            var responseModel = new LoginResponse();
             responseModel.Token = "gfewgewgwegwegweg";
             responseModel.TokenExpiry = DateTime.Now.AddDays(2);
             responseModel.ResponseMessage = "Test successful";
-            return responseModel;
+            responseModel.Status = HttpStatusCode.OK;
+            return Ok(responseModel);
         }
 
         [HttpPost("Login")]
         [MapToApiVersion("1.1")]
         public async Task<IActionResult> LoginAsync([FromBody] LoginViewModel requestModel)
         {
-            var responseModel = new LoginViewModel();
-            if (1 == 2 || 3 > 1)
-            {
-                //login user JWT
-
-                List<Claim> claims = new List<Claim>();
-                claims.Add(new Claim(ClaimTypes.NameIdentifier,""));
-                claims.Add(new Claim(ClaimTypes.Name,"john"));
-                claims.Add(new Claim(ClaimTypes.Surname,"parsly"));
-                claims.Add(new Claim(ClaimTypes.Role,"administrator"));
-
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["AuthSettings:Key"]));
-                var credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                var token = new JwtSecurityToken(
-                                        _config["AuthSettings:Issuer"], 
-                                        _config["AuthSettings:Audience"], 
-                                        claims, 
-                                        expires: DateTime.Now.AddHours(1),
-                                        signingCredentials: credential);
-                responseModel.Token = new JwtSecurityTokenHandler().WriteToken(token);
-                responseModel.TokenExpiry = token.ValidTo;
-                responseModel.ResponseMessage = "It works! Login V1.1";
-            }
-            return Ok(responseModel);
+            var response = await _service.SignInUser(requestModel);
+            
+            return SendResponse(response);
         }
 
         [HttpPost("Login")]
@@ -85,8 +98,9 @@ namespace MommyDayCare.Server.Controllers
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterViewModel model)
         {
             //HttpContext.User.Identity.Name;
-            
-            return Ok(new { Message = "It works! register" });
+
+            var response = await _service.RegisterUser(model);
+            return SendResponse(response);
         }
     }
 }

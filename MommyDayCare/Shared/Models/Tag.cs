@@ -12,7 +12,9 @@ namespace MommyDayCare.Shared.Models
 
         [Required]
         [MaxLength(15, ErrorMessage = "15 characters max")]
-        [MinLength(3, ErrorMessage = "At least 3 characters")]
+        [MinLength(2, ErrorMessage = "At least 3 characters")]
         public string Name { get; set; }
+
+        public virtual ICollection<PostTag> PostTags { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace MommyDayCare.Shared.Models
 
         [Required]
         [MinLength(3, ErrorMessage = "At least 3 characters")]
-        [MaxLength(200,ErrorMessage = "Max 200 Characters")]
+        [MaxLength(100,ErrorMessage = "Max 200 Characters")]
         public string Name { get; set; }
 
         [MaxLength(500, ErrorMessage = "Max 500 characters")]

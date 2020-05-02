@@ -10,11 +10,15 @@ namespace MommyDayCare.Shared.Models
         [Key]
         public int PostId { get; set; }
 
+        [Display(Name = "Owner")]
+        public int? AppUserId { get; set; }
+        public AppUser AppUser { get; set; }
+
         [DataType(DataType.DateTime)]
         public DateTime CreatedOn { get; set; }
 
         [DataType(DataType.DateTime)]
-        public DateTime UpdatedOn { get; set; }
+        public DateTime? UpdatedOn { get; set; }
 
         [Required]
         [Display(Name = "Post Type")]
@@ -31,9 +35,16 @@ namespace MommyDayCare.Shared.Models
 
         public string Attachment { get; set; }
 
+        public Guid Slug { get; set; }
+
+        [Required]
+        [Display(Name = "Post Status")]
         public PostStatus Status { get; set; }
 
+        public int CommentCount { get; set; }
+
         public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<PostTag> PostTags { get; set; }
 
         public enum PostStatus
         {
@@ -45,7 +56,7 @@ namespace MommyDayCare.Shared.Models
         public enum PostType
         {
             Forum,
-            Blog
+            Journal
         }
     }
 }

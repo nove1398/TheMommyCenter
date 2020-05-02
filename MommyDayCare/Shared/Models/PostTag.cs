@@ -6,7 +6,7 @@ namespace MommyDayCare.Shared.Models
 {
     public class PostTag
     {
-        public int PostIt { get; set; }
+        public int PostId { get; set; }
         public int TagId { get; set; }
 
         public virtual Post Post { get; set; }

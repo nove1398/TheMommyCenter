@@ -17,12 +17,6 @@ namespace MommyDayCare.Shared.ViewModels
         [MinLength(6, ErrorMessage = "Password too short")]
         public string Password { get; set; }
 
-        public string ResponseMessage { get; set; }
-
-        public string Token { get; set; }
-
-        public DateTime TokenExpiry { get; set; }
-
-        public string[] Errors { get; set; }
+        
     }
 }

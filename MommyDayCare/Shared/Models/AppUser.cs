@@ -11,11 +11,16 @@ namespace MommyDayCare.Shared.Models
         [Key]
         public int AppUserId { get; set; }
 
+        public Guid UserSlug { get; set; }
+
         [DataType(DataType.DateTime)]
         public DateTime RegisteredOn { get; set; }
 
         [DataType(DataType.DateTime)]
-        public DateTime UpdatedOn { get; set; }
+        public DateTime? UpdatedOn { get; set; }
+
+        [DataType(DataType.DateTime)]
+        public DateTime? LastLogin { get; set; }
 
         [Display(Name = "First Name")]
         [MinLength(3, ErrorMessage = "Must be at least 3 characters")]
@@ -29,7 +34,8 @@ namespace MommyDayCare.Shared.Models
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
+        
+        [Display(Name = "Display Name")]
         [MaxLength(20, ErrorMessage = "Too long of a name")]
         public string Username { get; set; }
 
@@ -45,19 +51,34 @@ namespace MommyDayCare.Shared.Models
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
 
+        [Display(Name = "Make Private")]
+        public bool IsPrivate { get; set; }
+
+        [Display(Name = "Avatar")]
         public string Avatar { get; set; }
 
-        [MaxLength(500, ErrorMessage = "Too long, try cutting back just a tad")]
-        public string Bio { get; set; }
+        [MaxLength(500, ErrorMessage = "Maxmimum 500 characters")]
+        public string Biography { get; set; }
 
+        [Display(Name = "Sex")]
         public Gender Sex { get; set; }
 
+        [Display(Name = "Country")]
         public string Country { get; set; }
+
+        [Display(Name = "Activation Code")]
+        public int? ActivationKey { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? Birthday { get; set; }
 
+        public virtual ICollection<Post> Posts { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Message> MessageTo { get; set; }
+        public virtual ICollection<Message> MessageFrom { get; set; }
         public virtual ICollection<AppUserRole> UserRoles { get; set; }
+        public virtual ICollection<AppUserFollowing> AppUserFollowers { get; set; }
+        public virtual ICollection<AppUserFollowing> AppUserFollowees { get; set; }
 
         public enum Gender
         {

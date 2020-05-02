@@ -11,6 +11,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Components.Authorization;
 using MommyDayCare.Client.Providers;
+using MommyDayCare.Server.Services;
 
 namespace MommyDayCare.Server
 {
@@ -34,7 +35,7 @@ namespace MommyDayCare.Server
                                                                 .AllowAnyHeader()
                                                                 .AllowCredentials()
                                                                 );
-                                                            });
+            });
             services.AddAuthentication(
                     auth =>
                 {
@@ -55,10 +56,11 @@ namespace MommyDayCare.Server
                 };
             });
             services.AddAuthorizationCore();
+            services.AddDbContext<BlogDBContext>(opts=>opts.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
             services.AddScoped<TokenAuthProvider>();
+            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<TokenAuthProvider>());
 
-            services.AddDbContext<BlogDBContext>(opts=>opts.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
             services.AddControllersWithViews();
 
             services.AddApiVersioning(cfg => 
