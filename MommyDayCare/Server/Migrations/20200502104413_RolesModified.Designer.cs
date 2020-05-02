@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MommyDayCare.Server.Data;
 
 namespace MommyDayCare.Server.Migrations
 {
     [DbContext(typeof(BlogDBContext))]
-    partial class BlogDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200502104413_RolesModified")]
+    partial class RolesModified
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,29 +97,6 @@ namespace MommyDayCare.Server.Migrations
                     b.HasKey("AppUserId");
 
                     b.ToTable("AppUsers");
-
-                    b.HasData(
-                        new
-                        {
-                            AppUserId = 1,
-                            ActivationKey = 0,
-                            Avatar = "",
-                            Biography = "Hi, I am me",
-                            Birthday = new DateTime(2020, 6, 2, 7, 15, 27, 507, DateTimeKind.Local).AddTicks(3361),
-                            Country = "jamaica",
-                            Email = "testc@gmail.com",
-                            FirstName = "nove",
-                            IsActive = true,
-                            IsPrivate = false,
-                            LastName = "francis",
-                            LoginAttemps = 0,
-                            Password = "254954d957f71e705815ed79dd9481d68b5f3cf4b5933fb1516929886c0bb221",
-                            RegisteredOn = new DateTime(2020, 5, 2, 7, 15, 27, 505, DateTimeKind.Local).AddTicks(9309),
-                            Salt = "Irk/0AuJPJABaDmJ5z3pmQ==",
-                            Sex = 0,
-                            UserSlug = new Guid("3df6c47a-9446-40a9-a8d1-6c4321ae1e8c"),
-                            Username = "humpty_fore"
-                        });
                 });
 
             modelBuilder.Entity("MommyDayCare.Shared.Models.AppUserFollowing", b =>
@@ -169,6 +148,9 @@ namespace MommyDayCare.Server.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(500)")
@@ -181,27 +163,9 @@ namespace MommyDayCare.Server.Migrations
 
                     b.HasKey("AppUserRoleId");
 
-                    b.ToTable("AppUserRoles");
+                    b.HasIndex("AppUserId");
 
-                    b.HasData(
-                        new
-                        {
-                            AppUserRoleId = 3,
-                            Description = "Access to site content",
-                            Name = "User"
-                        },
-                        new
-                        {
-                            AppUserRoleId = 1,
-                            Description = "Access to all the site content",
-                            Name = "Administrator"
-                        },
-                        new
-                        {
-                            AppUserRoleId = 2,
-                            Description = "Access to approve some site content",
-                            Name = "Moderator"
-                        });
+                    b.ToTable("AppUserRoles");
                 });
 
             modelBuilder.Entity("MommyDayCare.Shared.Models.Collection", b =>
@@ -407,44 +371,6 @@ namespace MommyDayCare.Server.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("MommyDayCare.Shared.Models.UsersToRoles", b =>
-                {
-                    b.Property<int>("AppUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AppUserRoleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsersToRolesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AppUserId", "AppUserRoleId");
-
-                    b.HasIndex("AppUserRoleId");
-
-                    b.ToTable("UsersToRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            AppUserId = 1,
-                            AppUserRoleId = 1,
-                            UsersToRolesId = 1
-                        },
-                        new
-                        {
-                            AppUserId = 1,
-                            AppUserRoleId = 2,
-                            UsersToRolesId = 2
-                        },
-                        new
-                        {
-                            AppUserId = 1,
-                            AppUserRoleId = 3,
-                            UsersToRolesId = 3
-                        });
-                });
-
             modelBuilder.Entity("MommyDayCare.Shared.Models.AppUserFollowing", b =>
                 {
                     b.HasOne("MommyDayCare.Shared.Models.AppUser", "AppUserFollower")
@@ -456,6 +382,15 @@ namespace MommyDayCare.Server.Migrations
                     b.HasOne("MommyDayCare.Shared.Models.AppUser", "AppUserFollowee")
                         .WithMany("AppUserFollowees")
                         .HasForeignKey("AppUserToFolloweeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MommyDayCare.Shared.Models.AppUserRole", b =>
+                {
+                    b.HasOne("MommyDayCare.Shared.Models.AppUser", "AppUser")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
@@ -511,21 +446,6 @@ namespace MommyDayCare.Server.Migrations
                     b.HasOne("MommyDayCare.Shared.Models.Tag", "Tag")
                         .WithMany("PostTags")
                         .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("MommyDayCare.Shared.Models.UsersToRoles", b =>
-                {
-                    b.HasOne("MommyDayCare.Shared.Models.AppUser", "AppUser")
-                        .WithMany("UsersToRoles")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MommyDayCare.Shared.Models.AppUserRole", "AppUserRole")
-                        .WithMany("UsersToRoles")
-                        .HasForeignKey("AppUserRoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

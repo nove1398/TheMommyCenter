@@ -6,6 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200502111128_ModdedDbContext.cs" />
+    <Compile Remove="Migrations\20200502111128_ModdedDbContext.Designer.cs" />
+    <Compile Remove="Migrations\20200502111242_ModdedDbContext.cs" />
+    <Compile Remove="Migrations\20200502111242_ModdedDbContext.Designer.cs" />
+    <Compile Remove="Migrations\20200502114447_ModdedDbContext.cs" />
+    <Compile Remove="Migrations\20200502114447_ModdedDbContext.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="3.2.0-preview2.20160.5" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />

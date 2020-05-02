@@ -7,38 +7,43 @@
 <div class="card">
     <div class="card-body">
         <h3>Login</h3>
-        @if (Errors.Length > 0)
-        {
-            //Display errors
-        }
-        <EditForm Model="loginViewModel" OnValidSubmit="SubmitLogin">
-            <DataAnnotationsValidator />
-            <div class="form-group">
-                <label>Email</label>
-                <InputText class="form-control" @bind-Value="loginViewModel.Email" />
-                <ValidationMessage For="@(()=> loginViewModel.Email)" />
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <InputText class="form-control" type="password" @bind-Value="loginViewModel.Password" />
-                <ValidationMessage For="@(()=> loginViewModel.Password)" />
-            </div>
+        <div class="col-sm-12 text-danger">
+            @if (Errors != null)
+            {
 
-            <button type="submit" class="btn btn-outline-primary btn-sm">Login</button>
-        </EditForm>
-    </div>
+                //Display errors
+                foreach (var error in Errors)
+                {
+                    <span class="col-sm-12">@error</span>
+                }
+            }
+        </div>
+            <EditForm Model="loginViewModel" OnValidSubmit="SubmitLogin">
+                <DataAnnotationsValidator />
+                <div class="form-group">
+                    <label>Email</label>
+                    <InputText class="form-control" @bind-Value="loginViewModel.Email" />
+                    <ValidationMessage For="@(()=> loginViewModel.Email)" />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <InputText class="form-control" type="password" @bind-Value="loginViewModel.Password" />
+                    <ValidationMessage For="@(()=> loginViewModel.Password)" />
+                </div>
+
+                <button type="submit" class="btn btn-outline-primary btn-sm">Login</button>
+            </EditForm>
+        </div>
 </div>
 
 @code {
     private LoginViewModel loginViewModel = new LoginViewModel();
-    private string[] Errors = new string[] { };
+    private IEnumerable<string> Errors { get; set; }
 
     protected override void OnInitialized()
     {
-        //var response =  await Http2.GetAsync<LoginModelView>("api/auth/test");
-        // await Provider.SetTokenAsync(response.Token, response.TokenExpiry);
-        loginViewModel.Email = "test@mgail.com";
-        loginViewModel.Password = "passworded";
+        loginViewModel.Email = "test@gmail.com";
+        loginViewModel.Password = "password";
     }
 
 
@@ -48,12 +53,14 @@
         // Provider.SetToken()
 
         var response = await Http.PostAsync<LoginResponse>("api/auth/login", loginViewModel);
-        if (response.Errors == null || response.Errors.Length < 1)
+        if (response.Errors == null || response.Errors.Count() < 1)
         {
-            await Provider.SetTokenAsync(response.Token, response.TokenExpiry);
+            if(response.Status == System.Net.HttpStatusCode.OK)
+            {
+                await Provider.SetTokenAsync(response.Token, response.TokenExpiry);
+                NavigationManager.NavigateTo("/", true);
+            }
 
-
-            NavigationManager.NavigateTo("/",true);
         }
         else
         {

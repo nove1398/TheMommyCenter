@@ -11,7 +11,7 @@ namespace MommyDayCare.Server.Extensions
     {
         public static async Task<int> CountAllActive(this DbSet<AppUser> users)
         {
-            return await users.Where(x=>x.AppUserId > 0).CountAsync();
+            return await users.Where(x=>x.IsActive == true).CountAsync();
         }
     }
 }

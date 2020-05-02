@@ -17,5 +17,7 @@ namespace MommyDayCare.Shared.Models
 
         [MaxLength(500, ErrorMessage = "Max 500 characters")]
         public string Description { get; set; }
+
+        public ICollection<UsersToRoles> UsersToRoles { get; set; }
     }
 }

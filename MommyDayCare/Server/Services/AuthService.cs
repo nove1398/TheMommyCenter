@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MommyDayCare.Server.Data;
+using MommyDayCare.Server.Tools;
 using MommyDayCare.Shared.Models;
 using MommyDayCare.Shared.ViewModels;
 using System;
@@ -46,16 +48,33 @@ namespace MommyDayCare.Server.Services
 
         public async Task<LoginResponse> SignInUser(LoginViewModel model)
         {
+
             var responseModel = new LoginResponse();
-            if (1 == 2 || 3 > 1)
+            var userFound = await _context.AppUsers.AsNoTracking().FirstOrDefaultAsync(u => u.Email == model.Email);
+            if(userFound == null)
+            {
+                 responseModel.Status = System.Net.HttpStatusCode.Unauthorized;
+                responseModel.ResponseMessage = "No account found for that email";
+                responseModel.Errors.Add("Email could not be found");
+                return responseModel;
+            }
+
+            if (PasswordHasher.VerifyPass(model.Password, userFound.Password, userFound.Salt))
             {
                 //login user JWT
-
+                var roles = await _context.UsersToRoles
+                    .AsNoTracking()
+                    .Include(r => r.AppUserRole)
+                    .Where(x => x.AppUserId == userFound.AppUserId)
+                    .ToListAsync();
                 List<Claim> claims = new List<Claim>();
-                claims.Add(new Claim(ClaimTypes.NameIdentifier, ""));
-                claims.Add(new Claim(ClaimTypes.Name, "john"));
-                claims.Add(new Claim(ClaimTypes.Surname, "parsly"));
-                claims.Add(new Claim(ClaimTypes.Role, "administrator"));
+                claims.Add(new Claim(ClaimTypes.NameIdentifier, userFound.UserSlug.ToString()));
+                claims.Add(new Claim(ClaimTypes.Name, userFound.FirstName));
+                claims.Add(new Claim(ClaimTypes.Surname, userFound.LastName));
+               foreach(var role in roles)
+                {
+                     claims.Add(new Claim(ClaimTypes.Role, role.AppUserRole.Name));
+                }
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["AuthSettings:Key"]));
                 var credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -67,8 +86,15 @@ namespace MommyDayCare.Server.Services
                                         signingCredentials: credential);
                 responseModel.Token = new JwtSecurityTokenHandler().WriteToken(token);
                 responseModel.TokenExpiry = token.ValidTo;
-                responseModel.ResponseMessage = "It works! Login V1.1";
+                responseModel.ResponseMessage = "welcome aboard the mommy train";
                 responseModel.Status = System.Net.HttpStatusCode.OK;
+            }
+            else
+            {
+                responseModel.Status = System.Net.HttpStatusCode.Unauthorized;
+                responseModel.ResponseMessage = "email or password was incorrect, please verify and try again";
+                responseModel.Errors.Add("Check email");
+                responseModel.Errors.Add("Check password");
             }
 
             return responseModel;

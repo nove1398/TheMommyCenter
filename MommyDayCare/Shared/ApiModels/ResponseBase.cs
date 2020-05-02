@@ -11,7 +11,7 @@ namespace MommyDayCare.Shared.ViewModels
 
         public string ResponseMessage { get; set; }
 
-        public string[] Errors { get; set; }
+        public List<string> Errors { get; set; } = new List<string>();
 
         public string RequestedResource { get; set; }
     }

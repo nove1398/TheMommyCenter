@@ -34,7 +34,6 @@ namespace MommyDayCare.Shared.Models
         [EmailAddress]
         public string Email { get; set; }
 
-        
         [Display(Name = "Display Name")]
         [MaxLength(20, ErrorMessage = "Too long of a name")]
         public string Username { get; set; }
@@ -76,7 +75,7 @@ namespace MommyDayCare.Shared.Models
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Message> MessageTo { get; set; }
         public virtual ICollection<Message> MessageFrom { get; set; }
-        public virtual ICollection<AppUserRole> UserRoles { get; set; }
+        public virtual ICollection<UsersToRoles> UsersToRoles { get; set; }
         public virtual ICollection<AppUserFollowing> AppUserFollowers { get; set; }
         public virtual ICollection<AppUserFollowing> AppUserFollowees { get; set; }
 

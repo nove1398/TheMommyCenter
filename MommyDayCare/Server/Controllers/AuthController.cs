@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MommyDayCare.Server.Services;
+using MommyDayCare.Server.Tools;
 using MommyDayCare.Shared.ViewModels;
 
 namespace MommyDayCare.Server.Controllers
@@ -49,7 +50,7 @@ namespace MommyDayCare.Server.Controllers
         //Internally send accurate response code to client
         private ObjectResult SendResponse(ResponseBase response)
         {
-            response.Uri = Request.Path;
+            response.RequestedResource = Request.Path;
             switch (response.Status)
             {
                 case HttpStatusCode.OK:
@@ -83,7 +84,6 @@ namespace MommyDayCare.Server.Controllers
         public async Task<IActionResult> LoginAsync([FromBody] LoginViewModel requestModel)
         {
             var response = await _service.SignInUser(requestModel);
-            
             return SendResponse(response);
         }
 
