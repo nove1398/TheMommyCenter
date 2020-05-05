@@ -24,7 +24,7 @@ namespace MommyDayCare.Client
             builder.Services.AddScoped<AuthenticationStateProvider, TokenAuthProvider>();
             builder.Services.AddScoped( provider => { 
                 
-                return new HttpProvider("https://localhost:44306", provider.GetRequiredService<TokenAuthProvider>()); 
+                return new HttpProvider("https://localhost:5001", provider.GetRequiredService<TokenAuthProvider>()); 
             } );
 
             await builder.Build().RunAsync();

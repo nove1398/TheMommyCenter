@@ -1,4 +1,5 @@
-﻿using MommyDayCare.Shared.ViewModels;
+﻿using MommyDayCare.Shared.ApiModels;
+using MommyDayCare.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace MommyDayCare.Server.Services
     {
         Task<LoginResponse> SignInUser(LoginViewModel model);
         Task<LoginResponse> RegisterUser(RegisterViewModel model);
-        Task<LoginResponse> DeactivateUser(int id);
+        Task<AuthResponse> DeactivateUser(int id);
     }
 }

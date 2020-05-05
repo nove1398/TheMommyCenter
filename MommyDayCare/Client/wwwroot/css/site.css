@@ -136,6 +136,14 @@ app {
     top: 0.5rem;
 }
 
+
+/*
+    My Styling
+*/
+.hide-fully{
+    display: none !important;
+}
+
 @media (max-width: 767.98px) {
     .main .top-row:not(.auth) {
         display: none;

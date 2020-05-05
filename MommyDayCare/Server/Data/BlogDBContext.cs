@@ -86,9 +86,9 @@ namespace MommyDayCare.Server.Data
             //UsersToRoles
             List<UsersToRoles> relatedUsers = new List<UsersToRoles>
             {
-                new UsersToRoles(){ UsersToRolesId = 1, AppUserId = 1, AppUserRoleId = 1},
-                new UsersToRoles(){ UsersToRolesId = 2, AppUserId = 1, AppUserRoleId = 2},
-                new UsersToRoles(){ UsersToRolesId = 3, AppUserId = 1, AppUserRoleId = 3},
+                new UsersToRoles(){  AppUserId = 1, AppUserRoleId = 1},
+                new UsersToRoles(){  AppUserId = 1, AppUserRoleId = 2},
+                new UsersToRoles(){  AppUserId = 1, AppUserRoleId = 3},
             };
             modelBuilder.Entity<UsersToRoles>(entity =>
             {

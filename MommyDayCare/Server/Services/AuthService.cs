@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using MommyDayCare.Server.Data;
 using MommyDayCare.Server.Tools;
+using MommyDayCare.Shared.ApiModels;
 using MommyDayCare.Shared.Models;
 using MommyDayCare.Shared.ViewModels;
 using System;
@@ -20,24 +22,55 @@ namespace MommyDayCare.Server.Services
     {
         private readonly BlogDBContext _context;
         private readonly IConfiguration _config;
+        private readonly ILogger<AuthService> _logger;
 
-        public AuthService(BlogDBContext context,IConfiguration config)
+        public AuthService(BlogDBContext context,IConfiguration config, ILogger<AuthService> logger)
         {
             _context = context;
             _config = config;
+            _logger = logger;
         }
 
-        public Task<LoginResponse> DeactivateUser(int id)
+        public async Task<AuthResponse> DeactivateUser(int id)
         {
-            throw new NotImplementedException();
+            var user = await _context.AppUsers.FindAsync(id);
+            var response = new AuthResponse();
+            if(user != null)
+            {
+                user.IsActive = false;
+                await _context.SaveChangesAsync();
+                response.Status = System.Net.HttpStatusCode.OK;
+                response.ResponseMessage = "user account deactivated";
+                return response;
+            }
+            response.Status = System.Net.HttpStatusCode.NotFound;
+            response.ResponseMessage = "user account not found";
+            return response;
         }
 
         public async Task<LoginResponse> RegisterUser(RegisterViewModel registerModel)
         {
+            _logger.LogDebug(registerModel.ToString());
+
+            var salty = PasswordHasher.GenerateSalt();
+            var hashedPass = PasswordHasher.HashPass(registerModel.Password, salty);
+
             var newUser = new AppUser();
             newUser.FirstName = registerModel.FirstName.Trim().ToLower();
             newUser.LastName = registerModel.LastName.Trim().ToLower();
             newUser.Birthday = registerModel.Birthday;
+            newUser.IsPrivate = false;
+            newUser.IsActive = true;
+            newUser.UserSlug = Guid.NewGuid();
+            newUser.ActivationKey = new Random().Next(40000, 999999);
+            newUser.Country = registerModel.Country;
+            newUser.Birthday = registerModel.Birthday;
+            newUser.Sex = registerModel.Sex;
+            newUser.Email = registerModel.Email;
+            newUser.Salt = salty;
+            newUser.Password = hashedPass;
+            newUser.UsersToRoles = new List<UsersToRoles> { new UsersToRoles { AppUser = newUser, AppUserRoleId = 3 } };
+
 
             var response = new LoginResponse();
 

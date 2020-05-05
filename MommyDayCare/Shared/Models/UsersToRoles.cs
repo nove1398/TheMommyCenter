@@ -7,9 +7,6 @@ namespace MommyDayCare.Shared.Models
 {
     public class UsersToRoles
     {
-        [Key]
-        public int UsersToRolesId { get; set; }
-
         public int AppUserId { get; set; }
         public int AppUserRoleId { get; set; }
 

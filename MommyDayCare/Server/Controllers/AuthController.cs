@@ -97,9 +97,15 @@ namespace MommyDayCare.Server.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterViewModel model)
         {
-            //HttpContext.User.Identity.Name;
 
             var response = await _service.RegisterUser(model);
+            return SendResponse(response);
+        }
+
+        [HttpPost("deactivate/{id:int}")]
+        public async Task<IActionResult> DeactivateUserAsync(int id)
+        {
+            var response = await _service.DeactivateUser(id);
             return SendResponse(response);
         }
     }
