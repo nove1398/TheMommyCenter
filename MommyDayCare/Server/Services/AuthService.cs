@@ -101,9 +101,11 @@ namespace MommyDayCare.Server.Services
                     .Where(x => x.AppUserId == userFound.AppUserId)
                     .ToListAsync();
                 List<Claim> claims = new List<Claim>();
-                claims.Add(new Claim(ClaimTypes.NameIdentifier, userFound.UserSlug.ToString()));
+                claims.Add(new Claim(ClaimTypes.NameIdentifier, Convert.ToString(userFound.AppUserId)));
+                claims.Add(new Claim("userslug", userFound.UserSlug.ToString()));
                 claims.Add(new Claim(ClaimTypes.Name, userFound.FirstName));
                 claims.Add(new Claim(ClaimTypes.Surname, userFound.LastName));
+                claims.Add(new Claim(ClaimTypes.Email, userFound.Email));
                foreach(var role in roles)
                 {
                      claims.Add(new Claim(ClaimTypes.Role, role.AppUserRole.Name));

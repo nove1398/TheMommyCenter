@@ -182,6 +182,12 @@ namespace MommyDayCare.Server.Data
             {
                 entity.Property(ar => ar.Name).IsRequired().HasMaxLength(100);
                 entity.Property(ar => ar.Description).IsRequired().HasMaxLength(500);
+                entity.HasMany(ag => ag.AppUsers)
+                        .WithOne(au => au.AppUserGroup)
+                        .HasForeignKey(au => au.AppUserGroupId)
+                        .IsRequired(false)
+                        .OnDelete(DeleteBehavior.SetNull);
+
             });
 
             //AppUserFollowing

@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using MommyDayCare.Server.Data;
+using MommyDayCare.Server.Services;
+using MommyDayCare.Shared.ApiModels;
 using MommyDayCare.Shared.ViewModels;
 
 namespace MommyDayCare.Server.Controllers
@@ -15,48 +20,32 @@ namespace MommyDayCare.Server.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly IWebHostEnvironment _env;
-        private readonly IConfiguration _config;
+        private readonly ProfileService _profileService;
 
+        private readonly ILogger<UsersController> _logger;
 
-        public UsersController(IWebHostEnvironment env, IConfiguration config) 
+        public UsersController(ProfileService profileService,
+            ILogger<UsersController> logger) 
         {
-            _config = config;
-            _env = env;
+            _logger = logger;
+            _profileService = profileService;
         }
 
         // POST: api/users/avatar
+        [Authorize]
         [HttpPost("avatar")]
         public async Task<IActionResult> AvatarUploadAsync([FromForm] IFormFile file)
         {
 
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("No file found");
-            }
+            var response =await _profileService.UploadAvatar(file);
+            _logger.LogInformation("Image uploaded");
 
-            var fileName = Guid.NewGuid().ToString();
-            string extension = Path.GetExtension(file.FileName);
-            string[] allowedExtensions = { ".jpg", ".jpeg", ".png" };
-
-            if (!allowedExtensions.Contains(extension))
-            {
-                return BadRequest("File selected is not a valid image");
-            }
-
-            string fullFilename = fileName + extension;
-            string filePath = Path.Combine(_env.ContentRootPath, "wwwroot","uploads","avatar",fullFilename);
-
-            using (var fs = new FileStream(filePath,FileMode.Create, FileAccess.Write))
-            {
-                await file.CopyToAsync(fs);
-            }
-
-            //Save file name/path to DB
-            return Ok(new { image = filePath });
+           
+            return Ok(response);
         }
 
         // POST: api/users/profile
+        [Authorize]
         [HttpPost("profile")]
         public async Task<IActionResult> OnPostUserProfileAsync([FromBody] RegisterViewModel model)
         {
@@ -66,8 +55,9 @@ namespace MommyDayCare.Server.Controllers
         }
 
         // PUT: api/users/profile/5
+        [Authorize]
         [HttpPut("profile/{id:int}")]
-        public async Task<IActionResult> OnPutUserProfileAsync(int id, [FromBody] RegisterViewModel model)
+        public async Task<IActionResult> OnPutUserProfileAsync(int id, [FromBody] ProfileViewModel model)
         {
 
 
@@ -75,6 +65,7 @@ namespace MommyDayCare.Server.Controllers
         }
 
         // DELETE: api/users/profile/5
+        [Authorize]
         [HttpDelete("profile/{id:int}")]
         public async Task<IActionResult> OnDeleteUserProfileAsync(int id)
         {
@@ -84,12 +75,28 @@ namespace MommyDayCare.Server.Controllers
         }
 
         // GET: api/users/profile/5
-        [HttpGet("profile/{id:int}")]
+        [Authorize]
+        [HttpGet("profile/{id}")]
         public async Task<IActionResult> OnGetUserProfileAsync(int id)
         {
-
-
-            return Ok();
+            
+            return Ok(new ProfileViewModel());
+          /*  if (id == 0)
+            {
+                
+                //var uid = User.Claims.FirstOrDefault(x => System.Security.Claims.ClaimTypes.NameIdentifier == x.Type).Value;
+                //_logger.LogInformation("User id searched for is {0}", uid);
+                //var user = await _context.AppUsers.FindAsync(1);
+               // ProfileResponse response = new ProfileResponse();
+                //response.RequestedResource = Request.Path;
+               // response.Status = System.Net.HttpStatusCode.OK;
+                //response.Profile = user;
+                return Ok();
+            }
+            else
+            {
+                return Ok();
+            }*/
         }
     }
 }

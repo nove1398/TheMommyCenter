@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
@@ -70,6 +71,10 @@ namespace MommyDayCare.Shared.Models
 
         [DataType(DataType.Date)]
         public DateTime? Birthday { get; set; }
+
+        [DisplayName("Group")]
+        public int? AppUserGroupId { get; set; }
+        public AppUserGroup AppUserGroup { get; set; }
 
         public virtual ICollection<Post> Posts { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }

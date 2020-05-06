@@ -59,6 +59,7 @@ namespace MommyDayCare.Server
             services.AddDbContext<BlogDBContext>(opts=>opts.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
             services.AddScoped<TokenAuthProvider>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<TokenAuthProvider>());
 
             services.AddControllersWithViews();
