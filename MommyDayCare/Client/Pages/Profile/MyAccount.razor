@@ -5,8 +5,9 @@
 
 
 <h3>My Account</h3>
+<AlertComponent IsVisible="IsLoaded" Title="@AlertTitle" Body="@AlertText" AType="@AlertType"></AlertComponent>
 <div class="col-sm-12">
-    <div>
+    <div class="mb-3">
         <img class="img-fluid" src="#"/>
         <form method="post" enctype="multipart/form-data" action="api/users/avatar">
             <input class="form-control" type="file" />
@@ -299,7 +300,6 @@
                 <ValidationMessage For="@(()=> ProfileView.Birthday)" />
             </div>
             <div>
-                <button class="btn btn-secondary">Cancel</button>
                 <button class="btn btn-primary">Update</button>
             </div>
            
@@ -310,22 +310,33 @@
 
 @code {
     public ProfileViewModel ProfileView = new ProfileViewModel();
+    private bool IsLoaded = false;
+    private string AlertText = "Profile loaded";
+    private string AlertTitle = "Loading status";
+    private AlertComponent.AlertType AlertType = AlertComponent.AlertType.Info;
 
     protected override async Task OnInitializedAsync()
-    {
-
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await FetchProfile();
     }
 
+
     private async Task FetchProfile()
     {
-        //var id = System.Security.Claims.ClaimsPrincipal.Current.Claims.FirstOrDefault(x => System.Security.Claims.ClaimTypes.NameIdentifier == x.Type).Value;
-        var result =  await Http.GetAsync<ProfileViewModel>($"api/users/profile?id=0");
-        //StateHasChanged();
+        IsLoaded = false;
+        var result =  await Http.GetAsync<ProfileResponse>($"api/users/profile/0");
+        if(result.Status == System.Net.HttpStatusCode.OK)
+        {
+            ProfileView = result.Profile;
+            AlertType = AlertComponent.AlertType.Info;
+            IsLoaded = true;
+        }
+        else
+        {
+            AlertType = AlertComponent.AlertType.Danger;
+            AlertText = result.ResponseMessage;
+        }
+        StateHasChanged();
     }
 
     private void SetBirthday(DateTime birthday)
@@ -335,6 +346,7 @@
 
     private async Task UpdateProfile()
     {
-        var response = await Http.PostAsync<ProfileResponse>("api/users/profile", ProfileView);
+        IsLoaded = false;
+        var response = await Http.PutAsync<ProfileResponse>("api/users/profile", ProfileView);
     }
 }

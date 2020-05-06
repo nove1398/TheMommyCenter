@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using MommyDayCare.Server.Data;
+using MommyDayCare.Server.Services.Interfaces;
 using MommyDayCare.Shared.ApiModels;
 using MommyDayCare.Shared.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace MommyDayCare.Server.Services
 {
-    public class ProfileService : ResponseBase, IProfileService
+    public class ProfileService : IProfileService
     {
         private readonly IHostEnvironment _env;
         private readonly BlogDBContext _context;
@@ -27,9 +28,30 @@ namespace MommyDayCare.Server.Services
             throw new NotImplementedException();
         }
 
-        public Task<ProfileResponse> GetProfile(int id)
+        public async Task<ProfileResponse> GetProfile(int id)
         {
-            throw new NotImplementedException();
+            var response = new ProfileResponse();
+
+            var user = await _context.AppUsers.AsNoTracking().FirstOrDefaultAsync(x => x.AppUserId == id);
+           if(user == null)
+            {
+                response.ResponseMessage = "No user account found";
+                response.Status = System.Net.HttpStatusCode.NotFound;
+                return response;
+            }
+            else
+            {
+                response.Status = System.Net.HttpStatusCode.OK;
+                response.Profile = new ProfileViewModel() { 
+                                    FirstName = user.FirstName, 
+                                    LastName = user.LastName, 
+                                    Birthday = user.Birthday.GetValueOrDefault(), 
+                                    Country = user.Country,
+                                     Email = user.Email,
+                                     Sex = user.Sex,
+                                     Username = user.Username};
+            }
+            return response;
         }
 
         public Task<ProfileResponse> UpdateProfile(ProfileViewModel model)

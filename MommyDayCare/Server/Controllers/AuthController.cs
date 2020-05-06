@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using MommyDayCare.Server.Services;
-using MommyDayCare.Server.Tools;
+using MommyDayCare.Server.Services.Interfaces;
 using MommyDayCare.Shared.ViewModels;
 
 namespace MommyDayCare.Server.Controllers
@@ -81,7 +74,7 @@ namespace MommyDayCare.Server.Controllers
 
         [HttpPost("Login")]
         [MapToApiVersion("1.1")]
-        public async Task<IActionResult> LoginAsync([FromBody] LoginViewModel requestModel)
+        public async Task<IActionResult> LoginAsync([FromBody] LoginRequest requestModel)
         {
             var response = await _service.SignInUser(requestModel);
             return SendResponse(response);
@@ -89,13 +82,13 @@ namespace MommyDayCare.Server.Controllers
 
         [HttpPost("Login")]
         [MapToApiVersion("1.2")]
-        public async Task<IActionResult> LoginV2Async([FromBody] LoginViewModel model)
+        public async Task<IActionResult> LoginV2Async([FromBody] LoginRequest model)
         {
             return Ok(new { Message = "It works! Login V1.2" });
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterAsync([FromBody] RegisterViewModel model)
+        public async Task<IActionResult> RegisterAsync([FromBody] RegisterRequest model)
         {
 
             var response = await _service.RegisterUser(model);

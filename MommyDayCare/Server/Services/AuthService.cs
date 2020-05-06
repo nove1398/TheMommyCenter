@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using MommyDayCare.Server.Data;
+using MommyDayCare.Server.Services.Interfaces;
 using MommyDayCare.Server.Tools;
 using MommyDayCare.Shared.ApiModels;
 using MommyDayCare.Shared.Models;
@@ -48,7 +48,7 @@ namespace MommyDayCare.Server.Services
             return response;
         }
 
-        public async Task<LoginResponse> RegisterUser(RegisterViewModel registerModel)
+        public async Task<LoginResponse> RegisterUser(RegisterRequest registerModel)
         {
             _logger.LogDebug(registerModel.ToString());
 
@@ -79,7 +79,7 @@ namespace MommyDayCare.Server.Services
             return response;
         }
 
-        public async Task<LoginResponse> SignInUser(LoginViewModel model)
+        public async Task<LoginResponse> SignInUser(LoginRequest model)
         {
 
             var responseModel = new LoginResponse();

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MommyDayCare.Shared.ViewModels
 {
-    public class RegisterViewModel
+    public class RegisterRequest
     {
         [Required]
         [Display(Name = "First Name")]

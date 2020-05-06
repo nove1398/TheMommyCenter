@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using MommyDayCare.Server.Data;
 using MommyDayCare.Server.Services;
+using MommyDayCare.Server.Services.Interfaces;
 using MommyDayCare.Shared.ApiModels;
 using MommyDayCare.Shared.ViewModels;
 
@@ -20,11 +17,11 @@ namespace MommyDayCare.Server.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly ProfileService _profileService;
+        private readonly IProfileService _profileService;
 
         private readonly ILogger<UsersController> _logger;
 
-        public UsersController(ProfileService profileService,
+        public UsersController(IProfileService profileService,
             ILogger<UsersController> logger) 
         {
             _logger = logger;
@@ -37,7 +34,7 @@ namespace MommyDayCare.Server.Controllers
         public async Task<IActionResult> AvatarUploadAsync([FromForm] IFormFile file)
         {
 
-            var response =await _profileService.UploadAvatar(file);
+            var response = await _profileService.UploadAvatar(file);
             _logger.LogInformation("Image uploaded");
 
            
@@ -47,7 +44,7 @@ namespace MommyDayCare.Server.Controllers
         // POST: api/users/profile
         [Authorize]
         [HttpPost("profile")]
-        public async Task<IActionResult> OnPostUserProfileAsync([FromBody] RegisterViewModel model)
+        public async Task<IActionResult> OnPostUserProfileAsync([FromBody] RegisterRequest model)
         {
 
 
@@ -76,27 +73,25 @@ namespace MommyDayCare.Server.Controllers
 
         // GET: api/users/profile/5
         [Authorize]
-        [HttpGet("profile/{id}")]
+        [HttpGet("profile/{id:int}")]
         public async Task<IActionResult> OnGetUserProfileAsync(int id)
         {
-            
-            return Ok(new ProfileViewModel());
-          /*  if (id == 0)
+            ProfileResponse response;
+
+            if (id == 0)
             {
                 
-                //var uid = User.Claims.FirstOrDefault(x => System.Security.Claims.ClaimTypes.NameIdentifier == x.Type).Value;
-                //_logger.LogInformation("User id searched for is {0}", uid);
-                //var user = await _context.AppUsers.FindAsync(1);
-               // ProfileResponse response = new ProfileResponse();
-                //response.RequestedResource = Request.Path;
-               // response.Status = System.Net.HttpStatusCode.OK;
-                //response.Profile = user;
-                return Ok();
+                var uid = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+                int.TryParse(uid, out int userId);
+                response = await _profileService.GetProfile(userId);
             }
             else
             {
-                return Ok();
-            }*/
+                response = await _profileService.GetProfile(id);
+            }
+            
+            response.RequestedResource = Request.Path;
+            return Ok(response);
         }
     }
 }

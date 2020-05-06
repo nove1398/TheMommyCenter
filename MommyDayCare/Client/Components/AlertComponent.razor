@@ -1,9 +1,12 @@
 ﻿@if (IsVisible)
 {
-    <div class="col-sm-12">
-        <div role="alert" class="alert @ClassName">
-            <h3><span class="float-left">@Title</span><span style="cursor:pointer" class="float-right oi oi-circle-x font-weight-bold" @onclick="OnCloseAlert"></span></h3>
-            <p>@Body</p>
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div role="alert" class="alert @ClassName">
+                <h3 class="float-left">@Title</h3><span style="cursor:pointer" class="float-right oi oi-circle-x font-weight-bold" @onclick="OnCloseAlert"></span>
+            </div>
+            <div>@Body</div>
         </div>
     </div>
 }
