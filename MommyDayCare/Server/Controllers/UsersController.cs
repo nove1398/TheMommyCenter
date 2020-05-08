@@ -33,12 +33,19 @@ namespace MommyDayCare.Server.Controllers
         [HttpPost("avatar")]
         public async Task<IActionResult> AvatarUploadAsync([FromForm] IFormFile file)
         {
-
-            var response = await _profileService.UploadAvatar(file);
-            _logger.LogInformation("Image uploaded");
-
-           
-            return Ok(response);
+            var response = new ProfileResponse();
+            try
+            {
+                 response = await _profileService.UploadAvatar(file);
+                _logger.LogInformation("Image uploaded");
+                return Ok(response);
+            }
+            catch (Exception)
+            {
+                response.Status = StatusCodes.Status400BadRequest;
+                return BadRequest(response);
+            }
+   
         }
 
         // POST: api/users/profile
@@ -76,7 +83,8 @@ namespace MommyDayCare.Server.Controllers
         [HttpGet("profile/{id:int}")]
         public async Task<IActionResult> OnGetUserProfileAsync(int id)
         {
-            ProfileResponse response;
+            ProfileResponse response = new ProfileResponse();
+            response.RequestedResource = Request.Path;
 
             if (id == 0)
             {
@@ -85,12 +93,16 @@ namespace MommyDayCare.Server.Controllers
                 int.TryParse(uid, out int userId);
                 response = await _profileService.GetProfile(userId);
             }
-            else
+            else if(id >= 1)
             {
                 response = await _profileService.GetProfile(id);
             }
-            
-            response.RequestedResource = Request.Path;
+            else
+            {
+                response.Status = StatusCodes.Status404NotFound;
+                response.ResponseMessage = "Invalid request";
+                return StatusCode(StatusCodes.Status404NotFound, "Invalid request");
+            }
             return Ok(response);
         }
     }

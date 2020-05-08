@@ -17,7 +17,6 @@
     <ProjectReference Include="..\Shared\MommyDayCare.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Pages\Discover\" />
     <Folder Include="wwwroot\Uploads\Images\" />
     <Folder Include="wwwroot\Uploads\Attachments\" />
   </ItemGroup>

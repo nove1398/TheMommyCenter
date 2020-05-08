@@ -7,7 +7,7 @@ namespace MommyDayCare.Shared.ViewModels
 {
     public class ResponseBase
     {
-        public HttpStatusCode Status { get; set; }
+        public int Status { get; set; }
 
         public string ResponseMessage { get; set; }
 
