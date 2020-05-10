@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -39,11 +40,11 @@ namespace MommyDayCare.Server.Services
             {
                 user.IsActive = false;
                 await _context.SaveChangesAsync();
-                response.Status = System.Net.HttpStatusCode.OK;
+                response.Status = StatusCodes.Status200OK;
                 response.ResponseMessage = "user account deactivated";
                 return response;
             }
-            response.Status = System.Net.HttpStatusCode.NotFound;
+            response.Status = StatusCodes.Status404NotFound;
             response.ResponseMessage = "user account not found";
             return response;
         }
@@ -86,7 +87,7 @@ namespace MommyDayCare.Server.Services
             var userFound = await _context.AppUsers.AsNoTracking().FirstOrDefaultAsync(u => u.Email == model.Email);
             if(userFound == null)
             {
-                 responseModel.Status = System.Net.HttpStatusCode.Unauthorized;
+                 responseModel.Status = StatusCodes.Status401Unauthorized;
                 responseModel.ResponseMessage = "No account found for that email";
                 responseModel.Errors.Add("Email could not be found");
                 return responseModel;
@@ -122,11 +123,11 @@ namespace MommyDayCare.Server.Services
                 responseModel.Token = new JwtSecurityTokenHandler().WriteToken(token);
                 responseModel.TokenExpiry = token.ValidTo;
                 responseModel.ResponseMessage = "welcome aboard the mommy train";
-                responseModel.Status = System.Net.HttpStatusCode.OK;
+                responseModel.Status = StatusCodes.Status200OK;
             }
             else
             {
-                responseModel.Status = System.Net.HttpStatusCode.Unauthorized;
+                responseModel.Status = StatusCodes.Status401Unauthorized;
                 responseModel.ResponseMessage = "email or password was incorrect, please verify and try again";
                 responseModel.Errors.Add("Check email");
                 responseModel.Errors.Add("Check password");

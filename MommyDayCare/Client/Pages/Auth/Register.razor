@@ -1,5 +1,5 @@
 ﻿@page "/auth/register"
-@inject HttpProvider Http
+@inject IAuthService AuthService
 @inject NavigationManager NavigationManager
 
 <div class="card">
@@ -312,7 +312,7 @@
         </div>
         <div class="form-group">
             <label>Birthday</label>
-            <DatePicker DateSelected="SetBirthday"></DatePicker>
+            <DatePickerComponent DateSelected="SetBirthday"></DatePickerComponent>
             <ValidationMessage For="@(()=> RegisterModel.Birthday)" />
         </div>
         <button type="submit" class="btn btn-outline-primary" disabled="@Disabled">Register</button>
@@ -340,8 +340,8 @@
     private async Task SubmitRegister()
     {
         Disabled = true;
-        var response = await Http.PostAsync<RegisterResponse>("api/auth/register", RegisterModel);
-        if(response.Status == System.Net.HttpStatusCode.OK)
+        var response = await AuthService.UserRegister(RegisterModel);
+        if(response.Status == 200)
         {
             IsRegistered = true;
         }

@@ -1,11 +1,18 @@
 ﻿<div class="loader-wrap">
     <div class="loader">
-        <p>Loading...</p>
+        <p>@Text</p>
         <div class="line"></div>
         <div class="line"></div>
         <div class="line"></div>
     </div>
 </div>
 @code {
+    [Parameter]
+    public string Text { get; set; }
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Text = "Just a sec, getting things ready for you";
+    }
 }

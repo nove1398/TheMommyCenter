@@ -1,15 +1,14 @@
 ﻿@page "/profile/myaccount"
 @attribute [Authorize]
-@inject HttpProvider Http
+@inject IProfileService ProfileService
 @using MommyDayCare.Shared.ViewModels
 
 
 <h3>My Account</h3>
-<AlertComponent IsVisible="IsLoaded" Body="@AlertText" AType="@AlertType"></AlertComponent>
 <div class="col-sm-12">
     @if (!IsLoaded)
     {
-        <div>Just a sec, getting things ready for you</div>
+        <LoadingComponent></LoadingComponent>
     }
     else
     {
@@ -32,6 +31,11 @@
                     <label>Last Name</label>
                     <InputText class="form-control" @bind-Value="ProfileView.LastName" />
                     <ValidationMessage For="@(()=> ProfileView.LastName)" />
+                </div>
+                <div class="form-group">
+                    <label for="@ProfileView.Username">Username</label>
+                    <InputText class="form-control" @bind-Value="ProfileView.Username" />
+                    <ValidationMessage For="@(()=> ProfileView.Username)" />
                 </div>
                 <div class="form-group">
                     <label>Sex</label>
@@ -301,9 +305,14 @@
                     <ValidationMessage For="@(()=> ProfileView.Country)" />
                 </div>
                 <div class="form-group">
-                    <label>Birthday</label>
+                    <label for="@ProfileView.Birthday">Birthday</label>
                     <DatePickerComponent DateSelected="SetBirthday"></DatePickerComponent>
                     <ValidationMessage For="@(()=> ProfileView.Birthday)" />
+                </div>
+                <div class="form-group">
+                    <label for="@ProfileView.Biography">Bio</label>
+                    <InputTextArea class="form-control" @bind-Value="ProfileView.Biography" />
+                    <ValidationMessage For="@(()=> ProfileView.Biography)" />
                 </div>
                 <div>
                     <button class="btn btn-primary">Update</button>
@@ -319,9 +328,7 @@
 @code {
     public ProfileViewModel ProfileView = new ProfileViewModel();
     private bool IsLoaded = false;
-    private string AlertText = "Profile loaded";
-    private string AlertTitle = "Loading status";
-    private AlertComponent.AlertType AlertType = AlertComponent.AlertType.Info;
+
 
 
     protected override async Task OnInitializedAsync()
@@ -333,19 +340,15 @@
     private async Task FetchProfile()
     {
         IsLoaded = false;
-        var result =  await Http.GetAsync<ProfileResponse>($"api/users/profile/0");
-        if(result.Status == System.Net.HttpStatusCode.OK)
+        var result = await ProfileService.GetProfileById(0);
+        if(result.Status == 200)
         {
             ProfileView = result.Profile;
-            AlertType = AlertComponent.AlertType.Info;
+
             IsLoaded = true;
         }
-        else
-        {
-            AlertType = AlertComponent.AlertType.Danger;
-            AlertText = result.ResponseMessage;
-        }
-     
+
+
     }
 
     private void SetBirthday(DateTime birthday)
@@ -356,6 +359,7 @@
     private async Task UpdateProfile()
     {
         IsLoaded = false;
-        var response = await Http.PutAsync<ProfileResponse>("api/users/profile", ProfileView);
+        var request = new ProfileRequest { Profile = ProfileView };
+        var response = await ProfileService.UpdateProfile(request);
     }
 }

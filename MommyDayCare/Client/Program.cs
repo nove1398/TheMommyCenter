@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using MommyDayCare.Client.Providers;
 using Microsoft.AspNetCore.Components.Authorization;
+using MommyDayCare.Client.Services;
 
 namespace MommyDayCare.Client
 {
@@ -18,6 +19,8 @@ namespace MommyDayCare.Client
             builder.Services.AddOptions();
             builder.Services.AddScoped<TokenAuthProvider>();
             builder.Services.AddScoped<AuthenticationStateProvider, TokenAuthProvider>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IProfileService, ProfileService>();
             builder.Services.AddScoped( provider => { 
                 
                 return new HttpProvider("https://localhost:5001", provider.GetRequiredService<TokenAuthProvider>()); 

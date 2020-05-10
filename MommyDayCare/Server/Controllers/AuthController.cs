@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MommyDayCare.Server.Services.Interfaces;
@@ -46,15 +47,15 @@ namespace MommyDayCare.Server.Controllers
             response.RequestedResource = Request.Path;
             switch (response.Status)
             {
-                case HttpStatusCode.OK:
+                case StatusCodes.Status200OK:
                     return Ok(response);
-                case HttpStatusCode.BadRequest:
+                case StatusCodes.Status400BadRequest:
                     return BadRequest(response);
-                case HttpStatusCode.NotFound:
+                case StatusCodes.Status404NotFound:
                     return NotFound(response);
-                case HttpStatusCode.Unauthorized:
+                case StatusCodes.Status401Unauthorized:
                     return Unauthorized(response);
-                case HttpStatusCode.Created:
+                case StatusCodes.Status201Created:
                     return Created("", response);
                 default:
                     return Unauthorized(response);
@@ -68,7 +69,7 @@ namespace MommyDayCare.Server.Controllers
             responseModel.Token = "gfewgewgwegwegweg";
             responseModel.TokenExpiry = DateTime.Now.AddDays(2);
             responseModel.ResponseMessage = "Test successful";
-            responseModel.Status = HttpStatusCode.OK;
+            responseModel.Status = StatusCodes.Status200OK;
             return Ok(responseModel);
         }
 

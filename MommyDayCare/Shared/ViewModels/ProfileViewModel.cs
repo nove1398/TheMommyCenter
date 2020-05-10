@@ -8,6 +8,8 @@ namespace MommyDayCare.Shared.ViewModels
 {
     public class ProfileViewModel
     {
+        public int Id { get; set; }
+
         [Required]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
@@ -36,5 +38,8 @@ namespace MommyDayCare.Shared.ViewModels
         [EmailAddress]
         [Display(Name = "Email Address")]
         public string Email { get; set; }
+        
+        [Display(Name = "Bio")]
+        public string Biography { get; set; }
     }
 }

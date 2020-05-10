@@ -36,12 +36,12 @@ namespace MommyDayCare.Server.Services
            if(user == null)
             {
                 response.ResponseMessage = "No user account found";
-                response.Status = System.Net.HttpStatusCode.NotFound;
+                response.Status = StatusCodes.Status404NotFound;
                 return response;
             }
             else
             {
-                response.Status = System.Net.HttpStatusCode.OK;
+                response.Status = StatusCodes.Status200OK;
                 response.Profile = new ProfileViewModel() { 
                                     FirstName = user.FirstName, 
                                     LastName = user.LastName, 
@@ -64,7 +64,7 @@ namespace MommyDayCare.Server.Services
             var response = new ProfileResponse();
             if (file == null || file.Length == 0)
             {
-                response.Status = System.Net.HttpStatusCode.BadRequest;
+                response.Status = StatusCodes.Status400BadRequest;
                 response.ResponseMessage = "No file found";
                 return response;
             }
@@ -75,7 +75,7 @@ namespace MommyDayCare.Server.Services
 
             if (!allowedExtensions.Contains(extension))
             {
-                response.Status = System.Net.HttpStatusCode.BadRequest;
+                response.Status = StatusCodes.Status400BadRequest;
                 response.ResponseMessage = "File selected is not a valid image";
                 return response;
             }
@@ -89,7 +89,7 @@ namespace MommyDayCare.Server.Services
             }
             // Save file name/path to DB
             // Somewhere here
-            response.Status = System.Net.HttpStatusCode.OK;
+            response.Status = StatusCodes.Status200OK;
             response.ResponseMessage = "image uploaded";
             return response;
         }

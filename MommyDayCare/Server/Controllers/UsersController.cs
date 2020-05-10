@@ -48,22 +48,15 @@ namespace MommyDayCare.Server.Controllers
    
         }
 
-        // POST: api/users/profile
-        [Authorize]
-        [HttpPost("profile")]
-        public async Task<IActionResult> OnPostUserProfileAsync([FromBody] RegisterRequest model)
-        {
-
-
-            return Ok();
-        }
-
         // PUT: api/users/profile/5
         [Authorize]
         [HttpPut("profile/{id:int}")]
         public async Task<IActionResult> OnPutUserProfileAsync(int id, [FromBody] ProfileViewModel model)
         {
-
+            if(id != model.Id)
+            {
+                return BadRequest("Profile ID is invalid");
+            }
 
             return Ok();
         }

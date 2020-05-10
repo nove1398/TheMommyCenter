@@ -1,0 +1,22 @@
+﻿@page "/messages"
+@attribute [Authorize]
+
+<h3>Messages</h3>
+
+@if (IsLoading)
+{
+    <LoadingComponent></LoadingComponent>
+    return;
+}
+<div class="row">
+    Messages here
+</div>
+
+
+
+
+@code {
+    public bool IsLoading = true;
+
+
+}
